@@ -1,0 +1,10 @@
+README.md
+setup.py
+sparse_features/__init__.py
+sparse_features/models.py
+sparse_features.egg-info/PKG-INFO
+sparse_features.egg-info/SOURCES.txt
+sparse_features.egg-info/dependency_links.txt
+sparse_features.egg-info/not-zip-safe
+sparse_features.egg-info/top_level.txt
+tests/__init__.py
