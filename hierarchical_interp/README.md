@@ -1,1 +1,1 @@
-# feature-tree
+# library of hierarchical interp packages

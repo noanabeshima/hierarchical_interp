@@ -10,3 +10,5 @@ setuptools==61.2.0
 torch==1.13.1
 tsp_solver==0.1
 pandas==1.5.2
+tqdm==4.62.3
+treelib==1.6.1

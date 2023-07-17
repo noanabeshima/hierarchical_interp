@@ -6,7 +6,7 @@ import torch.distributions as dists
 import numpy as np
 
 
-class SparseIndependent():
+class SparseIndependent:
     def __init__(self, n_features, d_model, feature_sparsity=0.04):
         super().__init__()
         self.n_features = n_features
