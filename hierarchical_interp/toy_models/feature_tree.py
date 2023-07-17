@@ -11,7 +11,6 @@ import torch.distributions as dists
 
 
 
-
 def recursively_add_nodes(all_features, tree_structure, node, parent_name):
     for edge in node.edges:
         is_read_out, is_allopatry, is_binary = edge['child'].is_read_out, edge['child'].is_allopatry, edge['child'].is_binary
