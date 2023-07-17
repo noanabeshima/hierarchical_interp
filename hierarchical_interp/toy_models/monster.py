@@ -20,10 +20,12 @@ class MonsterToy:
         # random features
         self.features = torch.randn(n_features, d_model)/np.sqrt(d_model)
 
+        self.monster_activities_dist = dists.Beta(10,9)
+
     def __call__(self, *batch_shape):
         sparse_feature_activities = self.dist.sample(batch_shape)*torch.rand(batch_shape + (self.n_sparse_features,))
         monster_activities_shape = batch_shape + (self.n_monster_features,)
-        monster_activities = torch.ones(monster_activities_shape)*torch.rand(monster_activities_shape)*1+1
+        monster_activities = self.monster_activities_dist.sample(monster_activities_shape)+1.3
         feature_activities = torch.cat((monster_activities, sparse_feature_activities), dim=-1)
         hidden_states = feature_activities @ self.features
 

@@ -48,15 +48,18 @@ from tqdm import tqdm
 import numpy as np
 
 class SparseNNMF(nn.Module):
-    def __init__(self, n_features, d_model, sparse_loss='kurtosis'):
+    def __init__(self, n_features, d_model, orthog_k=False):
         super().__init__()
-        assert sparse_loss in ['kurtosis', 'l1']
+        assert isinstance(orthog_k, int) or orthog_k is False
+        if orthog_k is not False:
+            assert orthog_k > 1, 'orthog_k must be > 1'
+            self.orthog_mask = nn.Parameter(1-torch.eye(orthog_k), requires_grad=False)
         self.n_features = n_features
         self.d_model = d_model
-        self.sparse_loss = sparse_loss
-        # self.unsigned_codes = nn.Parameter(torch.randn(n_codes, n_features)/np.sqrt(n_features))
         self.unsigned_codes = None
         self.atoms = nn.Parameter(torch.randn(n_features, d_model)/np.sqrt(d_model))
+        self.orthog_k = orthog_k
+
         self.norm_atoms()
     @property
     def codes(self):
@@ -70,11 +73,32 @@ class SparseNNMF(nn.Module):
         with torch.no_grad():
             self.atoms.data = F.normalize(self.atoms.data, dim=1)
     
-    def train(self, batch, n_steps=1000, lr=1e-2, sparse_coef = 1e-1, frozen_codes=False, frozen_atoms=False, reinit_codes=False):
+    def orthog_loss(self, codes):
+        assert self.orthog_k is not False
+        topk_vals, topk_idx = codes.topk(dim=-1, k=self.orthog_k)
+        active_atoms = torch.index_select(self.atoms, dim=0, index=topk_idx.view(-1)).view(*topk_idx.shape, -1)
+        orthog_loss = torch.einsum('bkd,bld,kl->bkl', active_atoms, active_atoms, self.orthog_mask).abs().mean()*((self.orthog_k**2)/(self.orthog_k**2-self.orthog_k))
+        return orthog_loss
+
+    
+    @property
+    def normed_atoms(self):
+        return F.normalize(self.atoms, dim=1)
+    
+    def train(self, batch, n_steps=1000, lr=1e-2, sparse_coef = 1e-1, frozen_codes=False, frozen_atoms=False, reinit_codes=False, orthog_coef=0., mean_init=False):
+        
+        if self.orthog_k is not False:
+            assert orthog_coef > 0, 'orthog_coef must be > 0'
         if reinit_codes or self.unsigned_codes is None or self.unsigned_codes.shape[0] != batch.shape[0]:
             if self.unsigned_codes is not None and self.unsigned_codes.shape[0] != batch.shape[0]:
                 print('reinitializing codes because batch size changed')
             self.unsigned_codes = nn.Parameter(torch.randn(batch.shape[0], self.n_features)/np.sqrt(self.n_features))
+        
+        if mean_init is True:
+            mean_dir = batch.mean(dim=0)
+            mean_dir = mean_dir/torch.norm(mean_dir)
+            self.atoms.data[0] = mean_dir
+            self.unsigned_codes.data[:,0] = batch @ mean_dir
         
         optimizer = optim.Adam(self.parameters(), lr=lr)
         scheduler = get_scheduler(optimizer, n_steps)
@@ -83,30 +107,28 @@ class SparseNNMF(nn.Module):
         for i in pbar:
             pred, codes = self(frozen_codes=frozen_codes, frozen_atoms=frozen_atoms)
             mse_loss = F.mse_loss(pred, batch.data)
-            if frozen_codes:
-                loss = mse_loss
-            else:
-                # if self.sparse_loss == 'l1':
-                #     sparse_loss = codes.mean(dim=-1).mean()
-                # else:
-                #     kurtosis = ((codes - codes.mean(dim=-1, keepdim=True))/codes.std(dim=-1, keepdim=True)).pow(4).mean()
-                #     sparse_loss = -kurtosis
+            
+            loss = mse_loss
+            if not frozen_codes:
                 sparse_loss = codes.mean(dim=-1).mean()
-
-                # loss = (mse_loss+0.01)*(sparse_loss+0.01)
-                loss = mse_loss + sparse_coef*sparse_loss
-
-
+                loss += sparse_coef*sparse_loss
+            if self.orthog_k is not False:
+                orthog_loss = self.orthog_loss(codes)
+                loss += orthog_coef*orthog_loss
+                
 
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
             scheduler.step()
 
-            if frozen_codes:
-                pbar.set_description(f'loss: {loss.item():.3f}, mse: {mse_loss.item():.3f}')
-            else:
-                pbar.set_description(f'loss: {loss.item():.3f}, mse: {mse_loss.item():.3f}, sparse: {sparse_loss.item():.3f}')
+            loss_string = f'loss: {loss.item():.3f}, mse: {mse_loss.item():.3f}'
+            if not frozen_codes:
+                loss_string += f', sparse: {sparse_loss.item():.3f}'
+            if self.orthog_k is not False:
+                loss_string += f', orthog: {orthog_loss.item():.3f}'
+            
+            pbar.set_description(loss_string)
             self.norm_atoms()
 
 
