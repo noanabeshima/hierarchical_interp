@@ -47,8 +47,19 @@ from interp_utils import get_scheduler
 from tqdm import tqdm
 import numpy as np
 
+import time
+
+class Timer:
+    def __init__(self):
+        self.last_time = time.time()
+    def __call__(self, name):
+        new_time = time.time()
+        delta = new_time - self.last_time
+        print(f'{name}: {delta:.3f} secs')
+        self.last_time = new_time
+
 class SparseNNMF(nn.Module):
-    def __init__(self, n_features, d_model, orthog_k=False):
+    def __init__(self, n_features, d_model, orthog_k=False, bias=False):
         super().__init__()
         assert isinstance(orthog_k, int) or orthog_k is False
         if orthog_k is not False:
@@ -60,15 +71,27 @@ class SparseNNMF(nn.Module):
         self.atoms = nn.Parameter(torch.randn(n_features, d_model)/np.sqrt(d_model))
         self.orthog_k = orthog_k
 
-        self.norm_atoms()
-    @property
-    def codes(self):
-        return self.unsigned_codes.abs()
-    def forward(self, frozen_codes=False, frozen_atoms=False):
-        codes = self.codes.detach() if frozen_codes else self.codes
-        atoms = self.atoms.detach() if frozen_atoms else self.atoms
 
-        return (codes @ atoms), codes
+        self.bias = nn.Parameter(torch.zeros(d_model)) if bias else None
+
+        self.norm_atoms()
+    def codes(self, codes_subset=None):
+        if codes_subset is not None:
+            return self.unsigned_codes[codes_subset].abs()
+        else:
+            return self.unsigned_codes.abs()
+    def forward(self, frozen_codes=False, frozen_atoms=False, codes_subset=None):
+        if codes_subset is not None:
+            codes = self.codes(codes_subset).detach() if frozen_codes else self.codes(codes_subset)
+        else:
+            codes = self.codes().detach() if frozen_codes else self.codes()
+        atoms = self.atoms.detach() if frozen_atoms else self.atoms
+        pred = codes @ atoms
+
+        if self.bias is not None:
+            pred += self.bias[None]
+
+        return pred, codes
     def norm_atoms(self):
         with torch.no_grad():
             self.atoms.data = F.normalize(self.atoms.data, dim=1)
@@ -80,33 +103,39 @@ class SparseNNMF(nn.Module):
         orthog_loss = torch.einsum('bkd,bld,kl->bkl', active_atoms, active_atoms, self.orthog_mask).abs().mean()*((self.orthog_k**2)/(self.orthog_k**2-self.orthog_k))
         return orthog_loss
 
-    
     @property
     def normed_atoms(self):
         return F.normalize(self.atoms, dim=1)
     
-    def train(self, batch, n_steps=1000, lr=1e-2, sparse_coef = 1e-1, frozen_codes=False, frozen_atoms=False, reinit_codes=False, orthog_coef=0., mean_init=False):
+    def train(self, train_data, n_epochs=1000, lr=1e-2, sparse_coef = 1e-1, frozen_codes=False, frozen_atoms=False, reinit_codes=False, orthog_coef=0., mean_init=False):
+
+        # if self.bias is not None:
+        #     self.bias.data = train_data.mean(dim=0)
         
         if self.orthog_k is not False:
             assert orthog_coef > 0, 'orthog_coef must be > 0'
-        if reinit_codes or self.unsigned_codes is None or self.unsigned_codes.shape[0] != batch.shape[0]:
-            if self.unsigned_codes is not None and self.unsigned_codes.shape[0] != batch.shape[0]:
-                print('reinitializing codes because batch size changed')
-            self.unsigned_codes = nn.Parameter(torch.randn(batch.shape[0], self.n_features)/np.sqrt(self.n_features))
+        if reinit_codes or self.unsigned_codes is None or self.unsigned_codes.shape[0] != train_data.shape[0]:
+            if self.unsigned_codes is not None and self.unsigned_codes.shape[0] != train_data.shape[0]:
+                print('reinitializing codes because train_data size changed')
+            self.unsigned_codes = nn.Parameter(torch.randn(train_data.shape[0], self.n_features)/np.sqrt(self.n_features))
         
         if mean_init is True:
-            mean_dir = batch.mean(dim=0)
+            mean_dir = train_data.mean(dim=0)
             mean_dir = mean_dir/torch.norm(mean_dir)
             self.atoms.data[0] = mean_dir
-            self.unsigned_codes.data[:,0] = batch @ mean_dir
+            self.unsigned_codes.data[:,0] = train_data @ mean_dir
+
+        
         
         optimizer = optim.Adam(self.parameters(), lr=lr)
-        scheduler = get_scheduler(optimizer, n_steps)
+        scheduler = get_scheduler(optimizer, n_epochs*(train_data.shape[0]//300))
     
-        pbar = tqdm(range(n_steps))
+        pbar = tqdm(range(n_epochs))
         for i in pbar:
             pred, codes = self(frozen_codes=frozen_codes, frozen_atoms=frozen_atoms)
-            mse_loss = F.mse_loss(pred, batch.data)
+
+            mse_loss = F.mse_loss(pred, train_data.data)
+
             
             loss = mse_loss
             if not frozen_codes:

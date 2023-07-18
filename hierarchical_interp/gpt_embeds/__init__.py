@@ -1,1 +1,1 @@
-from .embeds import embeds, toks, enc
+from .gpt_embeds import embeds, toks, enc
