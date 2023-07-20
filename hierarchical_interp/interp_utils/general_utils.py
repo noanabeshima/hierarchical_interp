@@ -140,3 +140,29 @@ class TensorHistogramObserver:
         self.counts += batched_bincount(
             flattened_bucket_ids, dim=-1, max_value=len(self.boundaries) - 1
         ).view(*obs.shape[:-1], -1)
+
+import pickle
+
+def save_checkpoint(*args, **kwargs):
+    checkpoint_cache = []
+
+    for pos_arg in args:
+        checkpoint_cache.append(pos_arg)
+    
+    for kwarg_name, kwarg_val in kwargs.items():
+        checkpoint_cache.append(kwarg_val)
+    
+    with open('checkpoint_cache.pkl', 'wb') as f:
+        pickle.dump(checkpoint_cache, f)
+
+def load_checkpoint():
+    with open('checkpoint_cache.pkl', 'rb') as f:
+        checkpoint_cache = pickle.load(f)
+    
+    if len(checkpoint_cache) == 0:
+        return None
+
+    if len(checkpoint_cache) == 1:
+        return checkpoint_cache[0]
+    else:
+        return checkpoint_cache

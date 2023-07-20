@@ -26,6 +26,8 @@ from .general_utils import (
     see,
     asee,
     TensorHistogramObserver,
+    save_checkpoint,
+    load_checkpoint,
 )
 from .seriation_utils import (
     get_local_distance_minimizing_permutation,
