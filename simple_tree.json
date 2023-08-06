@@ -1,0 +1,36 @@
+{
+  "active_prob": 1.0,
+  "is_read_out": false,
+  "children": [
+    {
+      "active_prob": 0.2,
+      "is_read_out": true,
+      "is_allopatry": true,
+      "children": [
+        {
+          "active_prob": 0.5,
+          "is_read_out": true
+        },
+        {
+          "active_prob": 0.5,
+          "is_read_out": true
+        }
+      ]
+    },
+    {
+      "active_prob": 0.2,
+      "is_read_out": true,
+      "is_allopatry": true,
+      "children": [
+        {
+          "active_prob": 0.5,
+          "is_read_out": true
+        },
+        {
+          "active_prob": 0.5,
+          "is_read_out": true
+        }
+      ]
+    }
+  ]
+}

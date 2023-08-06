@@ -1,0 +1,27 @@
+{
+    "active_prob": 1.0,
+    "id": "parent",
+    "is_allopatry": true,
+    "is_read_out": true,
+    "children": [
+        {
+            "active_prob": 0.5,
+            "id": "A"
+        },
+        {
+            "active_prob": 0.5,
+            "id": "C",
+            "is_read_out": true,
+            "is_allopatry": true,
+            "children":
+            [
+                {
+                    "active_prob": 0.5
+                },
+                {
+                    "active_prob": 0.5
+                }
+            ]
+        }
+    ]
+}

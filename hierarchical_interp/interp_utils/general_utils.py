@@ -143,7 +143,7 @@ class TensorHistogramObserver:
 
 import pickle
 
-def save_checkpoint(*args, **kwargs):
+def save_checkpoint(*args, checkpoint_name='checkpoint_cache', **kwargs):
     checkpoint_cache = []
 
     for pos_arg in args:
@@ -152,11 +152,11 @@ def save_checkpoint(*args, **kwargs):
     for kwarg_name, kwarg_val in kwargs.items():
         checkpoint_cache.append(kwarg_val)
     
-    with open('checkpoint_cache.pkl', 'wb') as f:
+    with open(checkpoint_name+'.pkl', 'wb') as f:
         pickle.dump(checkpoint_cache, f)
 
-def load_checkpoint():
-    with open('checkpoint_cache.pkl', 'rb') as f:
+def load_checkpoint(checkpoint_name='checkpoint_cache'):
+    with open(checkpoint_name+'.pkl', 'rb') as f:
         checkpoint_cache = pickle.load(f)
     
     if len(checkpoint_cache) == 0:

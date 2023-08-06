@@ -59,10 +59,10 @@ class Timer:
         self.last_time = new_time
 
 class SparseNNMF(nn.Module):
-    def __init__(self, n_features, d_model, orthog_k=False, bias=False):
+    def __init__(self, n_features, d_model, orthog_k=0, bias=False):
         super().__init__()
         assert isinstance(orthog_k, int) or orthog_k is False
-        if orthog_k is not False:
+        if orthog_k != 0:
             assert orthog_k > 1, 'orthog_k must be > 1'
             self.orthog_mask = nn.Parameter(1-torch.eye(orthog_k), requires_grad=False)
         self.n_features = n_features
@@ -97,7 +97,7 @@ class SparseNNMF(nn.Module):
             self.atoms.data = F.normalize(self.atoms.data, dim=1)
     
     def orthog_loss(self, codes):
-        assert self.orthog_k is not False
+        assert self.orthog_k != 0
         topk_vals, topk_idx = codes.topk(dim=-1, k=self.orthog_k)
         active_atoms = torch.index_select(self.atoms, dim=0, index=topk_idx.view(-1)).view(*topk_idx.shape, -1)
         orthog_loss = torch.einsum('bkd,bld,kl->bkl', active_atoms, active_atoms, self.orthog_mask).abs().mean()*((self.orthog_k**2)/(self.orthog_k**2-self.orthog_k))
@@ -112,7 +112,7 @@ class SparseNNMF(nn.Module):
         # if self.bias is not None:
         #     self.bias.data = train_data.mean(dim=0)
         
-        if self.orthog_k is not False:
+        if self.orthog_k is not False and not frozen_atoms:
             assert orthog_coef > 0, 'orthog_coef must be > 0'
         if reinit_codes or self.unsigned_codes is None or self.unsigned_codes.shape[0] != train_data.shape[0]:
             if self.unsigned_codes is not None and self.unsigned_codes.shape[0] != train_data.shape[0]:
@@ -139,9 +139,9 @@ class SparseNNMF(nn.Module):
             
             loss = mse_loss
             if not frozen_codes:
-                sparse_loss = codes.mean(dim=-1).mean()
+                sparse_loss = (codes).mean(dim=-1).mean()
                 loss += sparse_coef*sparse_loss
-            if self.orthog_k is not False:
+            if self.orthog_k != 0 and not frozen_atoms:
                 orthog_loss = self.orthog_loss(codes)
                 loss += orthog_coef*orthog_loss
                 
@@ -154,11 +154,13 @@ class SparseNNMF(nn.Module):
             loss_string = f'loss: {loss.item():.3f}, mse: {mse_loss.item():.3f}'
             if not frozen_codes:
                 loss_string += f', sparse: {sparse_loss.item():.3f}'
-            if self.orthog_k is not False:
+            if self.orthog_k != 0 and not frozen_atoms:
                 loss_string += f', orthog: {orthog_loss.item():.3f}'
             
             pbar.set_description(loss_string)
-            self.norm_atoms()
+
+            if not frozen_atoms:
+                self.norm_atoms()
 
 
         
