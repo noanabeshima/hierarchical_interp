@@ -51,7 +51,7 @@ class Tree:
     
     def __repr__(self, indent=0):
         s = ' '*(indent*2)
-        s += str(self.index)+' ' if self.index is not False else ' '
+        s += str(self.index)+' ' if self.index is not False else '  '
         s += 'B' if self.is_binary else ' '
         s += 'A' if self.is_allopatry else ' '
         s += f" {self.active_prob}"

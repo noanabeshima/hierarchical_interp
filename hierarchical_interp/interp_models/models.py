@@ -59,7 +59,7 @@ class Timer:
         self.last_time = new_time
 
 class SparseNNMF(nn.Module):
-    def __init__(self, n_features, d_model, orthog_k=0, bias=False):
+    def __init__(self, n_features, d_model, orthog_k=0, bias=False, disable_tqdm=False):
         super().__init__()
         assert isinstance(orthog_k, int) or orthog_k is False
         if orthog_k != 0:
@@ -74,6 +74,8 @@ class SparseNNMF(nn.Module):
 
         self.bias = nn.Parameter(torch.zeros(d_model)) if bias else None
 
+        self.disable_tqdm = disable_tqdm
+
         self.norm_atoms()
     def codes(self, codes_subset=None):
         if codes_subset is not None:
@@ -86,6 +88,7 @@ class SparseNNMF(nn.Module):
         else:
             codes = self.codes().detach() if frozen_codes else self.codes()
         atoms = self.atoms.detach() if frozen_atoms else self.atoms
+
         pred = codes @ atoms
 
         if self.bias is not None:
@@ -109,28 +112,30 @@ class SparseNNMF(nn.Module):
     
     def train(self, train_data, n_epochs=1000, lr=1e-2, sparse_coef = 1e-1, frozen_codes=False, frozen_atoms=False, reinit_codes=False, orthog_coef=0., mean_init=False):
 
-        # if self.bias is not None:
-        #     self.bias.data = train_data.mean(dim=0)
+        if self.bias is not None and mean_init is True:
+            self.bias.data = train_data.mean(dim=0)
         
-        if self.orthog_k is not False and not frozen_atoms:
+        if self.orthog_k != 0 and not frozen_atoms:
             assert orthog_coef > 0, 'orthog_coef must be > 0'
         if reinit_codes or self.unsigned_codes is None or self.unsigned_codes.shape[0] != train_data.shape[0]:
+
             if self.unsigned_codes is not None and self.unsigned_codes.shape[0] != train_data.shape[0]:
                 print('reinitializing codes because train_data size changed')
-            self.unsigned_codes = nn.Parameter(torch.randn(train_data.shape[0], self.n_features)/np.sqrt(self.n_features))
+            self.unsigned_codes = nn.Parameter(torch.randn(train_data.shape[0], self.n_features, device=self.atoms.device)/np.sqrt(self.n_features))
         
-        if mean_init is True:
-            mean_dir = train_data.mean(dim=0)
-            mean_dir = mean_dir/torch.norm(mean_dir)
-            self.atoms.data[0] = mean_dir
-            self.unsigned_codes.data[:,0] = train_data @ mean_dir
+        
+        # if mean_init is True:
+        #     mean_dir = train_data.mean(dim=0)
+        #     mean_dir = mean_dir/torch.norm(mean_dir)
+        #     self.atoms.data[0] = mean_dir
+        #     self.unsigned_codes.data[:,0] = train_data @ mean_dir
 
         
         
         optimizer = optim.Adam(self.parameters(), lr=lr)
-        scheduler = get_scheduler(optimizer, n_epochs*(train_data.shape[0]//300))
+        scheduler = get_scheduler(optimizer, n_epochs)
     
-        pbar = tqdm(range(n_epochs))
+        pbar = tqdm(range(n_epochs)) if not self.disable_tqdm else range(n_epochs)
         for i in pbar:
             pred, codes = self(frozen_codes=frozen_codes, frozen_atoms=frozen_atoms)
 
@@ -138,16 +143,28 @@ class SparseNNMF(nn.Module):
 
             
             loss = mse_loss
+
+            # with torch.no_grad():
+            #     whitened_codes = (codes - codes.mean(dim=-1, keepdim=True))/codes.std(dim=-1, keepdim=True)
+            #     whitened_codes = whitened_codes.detach()
+            #     atom_corrs = whitened_codes.T @ whitened_codes
+            #     atom_corrs = atom_corrs - torch.eye(atom_corrs.shape[0], device=atom_corrs.device)
+
+            # sims = self.atoms @ self.atoms.T
+            # sims_loss = (F.relu(sims)*F.relu(-atom_corrs)).mean()
+            # loss += 1e-1*sims_loss
+                
+
             if not frozen_codes:
                 sparse_loss = (codes).mean(dim=-1).mean()
                 loss += sparse_coef*sparse_loss
             if self.orthog_k != 0 and not frozen_atoms:
                 orthog_loss = self.orthog_loss(codes)
                 loss += orthog_coef*orthog_loss
-                
-
+            
             optimizer.zero_grad()
             loss.backward()
+
             optimizer.step()
             scheduler.step()
 
@@ -156,8 +173,10 @@ class SparseNNMF(nn.Module):
                 loss_string += f', sparse: {sparse_loss.item():.3f}'
             if self.orthog_k != 0 and not frozen_atoms:
                 loss_string += f', orthog: {orthog_loss.item():.3f}'
+            # loss_string += f', lr: {scheduler.get_last_lr()[0]/lr:.3e}'
             
-            pbar.set_description(loss_string)
+            if not self.disable_tqdm:
+                pbar.set_description(loss_string)
 
             if not frozen_atoms:
                 self.norm_atoms()

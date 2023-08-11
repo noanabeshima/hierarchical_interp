@@ -12,8 +12,12 @@
           "is_read_out": true
         },
         {
-          "active_prob": 0.5,
+          "active_prob": 0.3,
           "is_read_out": true
+        },
+        {
+          "active_prob": 0.2,
+          "is_read_out": false
         }
       ]
     },
@@ -27,8 +31,12 @@
           "is_read_out": true
         },
         {
-          "active_prob": 0.5,
+          "active_prob": 0.3,
           "is_read_out": true
+        },
+        {
+          "active_prob": 0.2,
+          "is_read_out": false
         }
       ]
     }

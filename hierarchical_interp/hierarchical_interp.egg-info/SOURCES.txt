@@ -1,5 +1,7 @@
 README.md
 setup.py
+gpt_embeds/__init__.py
+gpt_embeds/gpt_embeds.py
 hierarchical_interp.egg-info/PKG-INFO
 hierarchical_interp.egg-info/SOURCES.txt
 hierarchical_interp.egg-info/dependency_links.txt
@@ -14,6 +16,7 @@ interp_utils/rendering.py
 interp_utils/s3_utils.py
 interp_utils/seriation_utils.py
 toy_models/__init__.py
+toy_models/discrete_tree.py
 toy_models/feature_tree.py
 toy_models/monster.py
 toy_models/sparse_independent.py
