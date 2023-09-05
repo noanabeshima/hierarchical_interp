@@ -10,157 +10,24 @@
         {
           "active_prob": 0.2,
           "is_read_out": true,
-          "is_allopatry": true,
-          "children": [
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            }
-          ]
+          "is_allopatry": false,
+          "children": []
         },
         {
           "active_prob": 0.2,
           "is_read_out": true,
-          "is_allopatry": true,
-          "children": [
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            }
-          ]
+          "is_allopatry": false,
+          "children": []
         },
         {
           "active_prob": 0.2,
           "is_read_out": true,
-          "is_allopatry": true,
-          "children": [
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            }
-          ]
+          "is_allopatry": false,
+          "children": []
         },
         {
-          "active_prob": 0.2,
-          "is_read_out": true,
-          "is_allopatry": true,
-          "children": [
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            }
-          ]
-        },
-        {
-          "active_prob": 0.2,
-          "is_read_out": true,
-          "is_allopatry": true,
-          "children": [
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            }
-          ]
+          "active_prob": 0.4,
+          "is_read_out": false
         }
       ]
     },
@@ -172,157 +39,24 @@
         {
           "active_prob": 0.2,
           "is_read_out": true,
-          "is_allopatry": true,
-          "children": [
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            }
-          ]
+          "is_allopatry": false,
+          "children": []
         },
         {
           "active_prob": 0.2,
           "is_read_out": true,
-          "is_allopatry": true,
-          "children": [
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            }
-          ]
+          "is_allopatry": false,
+          "children": []
         },
         {
           "active_prob": 0.2,
           "is_read_out": true,
-          "is_allopatry": true,
-          "children": [
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            }
-          ]
+          "is_allopatry": false,
+          "children": []
         },
         {
-          "active_prob": 0.2,
-          "is_read_out": true,
-          "is_allopatry": true,
-          "children": [
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            }
-          ]
-        },
-        {
-          "active_prob": 0.2,
-          "is_read_out": true,
-          "is_allopatry": true,
-          "children": [
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            }
-          ]
+          "active_prob": 0.4,
+          "is_read_out": false
         }
       ]
     },
@@ -334,159 +68,56 @@
         {
           "active_prob": 0.2,
           "is_read_out": true,
-          "is_allopatry": true,
-          "children": [
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            }
-          ]
+          "is_allopatry": false,
+          "children": []
         },
         {
           "active_prob": 0.2,
           "is_read_out": true,
-          "is_allopatry": true,
-          "children": [
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            }
-          ]
+          "is_allopatry": false,
+          "children": []
         },
         {
           "active_prob": 0.2,
           "is_read_out": true,
-          "is_allopatry": true,
-          "children": [
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            }
-          ]
+          "is_allopatry": false,
+          "children": []
         },
         {
-          "active_prob": 0.2,
-          "is_read_out": true,
-          "is_allopatry": true,
-          "children": [
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            }
-          ]
-        },
-        {
-          "active_prob": 0.2,
-          "is_read_out": true,
-          "is_allopatry": true,
-          "children": [
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            },
-            {
-              "active_prob": 0.25,
-              "is_allopatry": false,
-              "is_read_out": true,
-              "children": []
-            }
-          ]
+          "active_prob": 0.4,
+          "is_read_out": false
         }
       ]
+    },
+    {
+      "active_prob": 0.05,
+      "is_read_out": true,
+      "is_allopatry": false
+    },
+    {
+      "active_prob": 0.05,
+      "is_read_out": true,
+      "is_allopatry": false
+    },
+    {
+      "active_prob": 0.05,
+      "is_read_out": true,
+      "is_allopatry": false
+    },
+    {
+      "active_prob": 0.05,
+      "is_read_out": true,
+      "is_allopatry": false
+    },
+    {
+      "active_prob": 0.05,
+      "is_read_out": true,
+      "is_allopatry": false
+    },
+    {
+      "active_prob": 0.05,
+      "is_read_out": true,
+      "is_allopatry": false
     }
   ]
 }
